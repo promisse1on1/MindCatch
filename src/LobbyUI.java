@@ -20,22 +20,58 @@ public class LobbyUI {
         frame = new JFrame("CatchMind - 로비");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 600);
-        frame.setLayout(new BorderLayout());
+
+        // 배경 패널 생성
+        JPanel backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImage = new ImageIcon("image/backGround.png"); // 배경 이미지 경로
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this); // 패널 크기에 맞게 이미지 그리기
+            }
+        };
+        backgroundPanel.setLayout(new BorderLayout()); // 내부 컴포넌트를 배치하기 위
 
         // --------------------- 상단 패널: 게임 제목 + 방 만들기 ---------------------
         JPanel topPanel = new JPanel(new BorderLayout());
-        JLabel titleLabel = new JLabel("CatchMind", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 32));
-        JButton createRoomButton = new JButton("방 만들기");
+        topPanel.setOpaque(false); // 패널 투명 설정
+        // CatchMind 로고 이미지 추가
+        ImageIcon logoIcon = new ImageIcon("image/Logo.png"); // 로고 이미지 경로
+        Image resizedLogoImage = logoIcon.getImage().getScaledInstance(200, 80, Image.SCALE_SMOOTH); // 크기 조정
+        ImageIcon resizedLogoIcon = new ImageIcon(resizedLogoImage);
+        JLabel logoLabel = new JLabel(resizedLogoIcon);
+
+        // 상단 패널의 크기 설정
+        topPanel.setPreferredSize(new Dimension(1000, 100)); // 상단 패널 크기
+        logoLabel.setPreferredSize(new Dimension(200, 50)); // 로고 라벨 크기
+        topPanel.add(logoLabel, BorderLayout.CENTER); // 로고를 상단 중앙에 배치
+
+        // 방 만들기 버튼에 이미지 추가
+        ImageIcon buttonIcon = new ImageIcon("image/createRoom.png"); // 버튼 이미지 경로
+        Image resizedButtonImage = buttonIcon.getImage().getScaledInstance(100, 30, Image.SCALE_SMOOTH); // 크기 조정
+        ImageIcon resizedButtonIcon = new ImageIcon(resizedButtonImage);
+
+        JButton createRoomButton = new JButton(resizedButtonIcon); // 이미지로 버튼 생성
+        createRoomButton.setPreferredSize(new Dimension(100, 30)); // 버튼 크기 설정
+        createRoomButton.setBorderPainted(false); // 버튼 테두리 제거
+        createRoomButton.setFocusPainted(false);  // 포커스 테두리 제거
+        createRoomButton.setContentAreaFilled(false); // 버튼 배경 제거
         createRoomButton.addActionListener(this::showCreateRoomDialog);
 
-        topPanel.add(titleLabel, BorderLayout.CENTER);
-        topPanel.add(createRoomButton, BorderLayout.EAST);
-        frame.add(topPanel, BorderLayout.NORTH);
+        // 방 만들기 버튼을 감싸는 패널 생성
+        JPanel buttonPanel = new JPanel(new GridBagLayout()); // 버튼을 세로 중앙에 정렬하기 위한 레이아웃
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20)); // 오른쪽 여백 추가 (20px)
+        buttonPanel.setOpaque(false); // 배경 투명
+        buttonPanel.add(createRoomButton); // 버튼 추가
+
+        topPanel.add(buttonPanel, BorderLayout.EAST); // 버튼 패널을 상단 패널의 오른쪽에 추가
+
+        backgroundPanel.add(topPanel, BorderLayout.NORTH);
 
         // --------------------- 중앙 패널: 방 목록과 채팅창 ---------------------
         // --------------------- 중앙 패널: 방 목록과 채팅창 ---------------------
         JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setOpaque(false);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
         // 방 목록 테이블
@@ -80,9 +116,9 @@ public class LobbyUI {
             }
         });
 
-        // 방 목록 데이터 추가 (예제)
-        roomTableModel.addRow(new Object[]{"재밌는 게임", "사용자1", "2/4", "아니오", "대기"});
-        roomTableModel.addRow(new Object[]{"긴장감 넘치는 방", "사용자2", "1/4", "예", "대기"});
+//        // 방 목록 데이터 추가 (예제)
+//        roomTableModel.addRow(new Object[]{"재밌는 게임", "사용자1", "2/4", "아니오", "대기"});
+//        roomTableModel.addRow(new Object[]{"긴장감 넘치는 방", "사용자2", "1/4", "예", "대기"});
 
         // 스크롤 패널로 감싸기
         JScrollPane roomScrollPane = new JScrollPane(roomTable);
@@ -90,6 +126,7 @@ public class LobbyUI {
 
         // 채팅창
         JPanel chatPanel = new JPanel(new BorderLayout());
+        chatPanel.setOpaque(false); // 패널 투명 설정
         chatPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         chatArea = new JTextArea();
         chatArea.setEditable(false);
@@ -108,9 +145,14 @@ public class LobbyUI {
 
         centerPanel.add(roomScrollPane, BorderLayout.NORTH); // 방 목록 상단
         centerPanel.add(chatPanel, BorderLayout.CENTER);     // 채팅창 아래쪽
-        frame.add(centerPanel, BorderLayout.CENTER);
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
         // --------------------- 오른쪽 패널: 유저 정보와 유저 목록 ---------------------
         JPanel rightPanel = new JPanel(new BorderLayout());
+
+        rightPanel.setOpaque(false); // 패널 투명 설정
+
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+
 
         // 유저 정보 패널
         JPanel userInfoPanel = new JPanel(new BorderLayout());
@@ -141,7 +183,13 @@ public class LobbyUI {
 
         rightPanel.add(userHeaderPanel, BorderLayout.NORTH); // 상단에 샘플 이미지와 닉네임
         rightPanel.add(userScrollPane, BorderLayout.CENTER); // 하단에 유저 목록
-        frame.add(rightPanel, BorderLayout.EAST);
+        backgroundPanel.add(rightPanel, BorderLayout.EAST);
+
+        // **배경 패널을 프레임에 설정**
+        frame.setContentPane(backgroundPanel);
+
+        // 모든 버튼에 손 모양 커서를 적용
+        UIUtils.applyHandCursorToAll(backgroundPanel);
 
         frame.setVisible(true);
 

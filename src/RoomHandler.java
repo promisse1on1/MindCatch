@@ -8,7 +8,7 @@ public class RoomHandler {
     private ClientHandler roomOwner;
     private ClientHandler painterClient;
     private Map<ClientHandler, Integer> clinetWithScore = new LinkedHashMap<>();//사용자와 점수
-    private List<String> Word = new ArrayList<>(Arrays.asList("apple", "banana", "cherry"));
+    private List<String> Word = new ArrayList<>(Arrays.asList("축구", "바다", "산", "호수", "강아지", "고양이", "자전거", "꽃", "나무", "해", "달"));
     private int curruntWordIndex = 0;
     private int timer = 30;
     private String password;

@@ -145,6 +145,10 @@ public class StartUI extends JFrame{
             });
 
             add(backgroundPanel);
+
+            // 모든 버튼에 손 모양 커서를 적용
+            UIUtils.applyHandCursorToAll(backgroundPanel);
+
             setVisible(true);
 
 
